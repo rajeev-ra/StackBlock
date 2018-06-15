@@ -9,6 +9,18 @@ define(['THREE', 'Config', 'FallBlock'], function(THREE, Config, FallBlock){
         Fix:function(){return true;}
     };
 
+    window.resetLastBlock = function(){
+        lastBlock = {
+            widthX: 5,
+            widthZ: 5,
+            posX:0,
+            posZ:0,
+            Fix:function(){return true;}
+        };
+        high = 0;
+        scoreEl.innerHTML = high;
+    };
+
     var activeMat = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
     var fixedMat = new THREE.MeshLambertMaterial( {color: 0xff0000, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1} );    
     var wireMat = new THREE.LineBasicMaterial( { color: 0xffff00, linewidth: 2 } );
@@ -42,6 +54,13 @@ define(['THREE', 'Config', 'FallBlock'], function(THREE, Config, FallBlock){
                 trans.z = 0.1;
             }
 
+            this.GameOver = function(){
+                new FallBlock(scene, _this.mesh.position, _this.widthX, _this.widthZ);
+                GetScene().remove(_this.mesh);
+                setTimeout(function(){gameOver(high);}, 1000);
+                return false;
+            };
+
             this.Fix = function(){
                 var fallWidthx = _this.widthX;
                 var fallWidthz = _this.widthZ;
@@ -50,10 +69,8 @@ define(['THREE', 'Config', 'FallBlock'], function(THREE, Config, FallBlock){
                 if(high % 2){
                     var diff = _this.posX - _this.mesh.position.x;
                     fallWidthx = Math.abs(diff);
-                    if(_this.widthX <= Math.abs(diff)){
-                        new FallBlock(scene, _this.mesh.position, _this.widthX, _this.widthZ);
-                        GetScene().remove(_this.mesh);
-                        return false;
+                    if(_this.widthX <= Math.abs(diff)){                        
+                        return _this.GameOver();
                     }
                     if(0.2 < diff){
                         _this.widthX -= diff;
@@ -73,10 +90,8 @@ define(['THREE', 'Config', 'FallBlock'], function(THREE, Config, FallBlock){
                 else{
                     var diff = _this.posZ - _this.mesh.position.z;                    
                     fallWidthz = Math.abs(diff);
-                    if(_this.widthZ <= Math.abs(diff)){
-                        new FallBlock(scene, _this.mesh.position, _this.widthX, _this.widthZ);
-                        GetScene().remove(_this.mesh);
-                        return false;
+                    if(_this.widthZ <= Math.abs(diff)){                      
+                        return _this.GameOver();
                     }
                     if(0.2 < diff){
                         _this.widthZ -= diff;

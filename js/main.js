@@ -12,10 +12,41 @@ requirejs.config({
 
 require(["THREE", "Universe", "Block"],
     function(THREE, Universe, Block){
-        var u = new Universe(document.body);
+        var banner = document.getElementById("banner");
+        var btnPlay = document.getElementById("play-btn");
+        var scoreDiv = document.getElementById("score");
+        var sm = document.getElementById("score-message");
 
-        document.onmousedown = function(){
-            u.AddBlock(new Block(u.GetScene()));
+        var universe = new Universe(document.body);
+        var universeDiv = universe.GetDom();
+
+        btnPlay.onclick = function(){
+            universe.Reset();
+            banner.style.display = "none";
+            scoreDiv.style.display = "block";            
+            
+            var i = document.body;
+            if (i.requestFullscreen) {
+                i.requestFullscreen();
+            } else if (i.webkitRequestFullscreen) {
+                i.webkitRequestFullscreen();
+            } else if (i.mozRequestFullScreen) {
+                i.mozRequestFullScreen();
+            } else if (i.msRequestFullscreen) {
+                i.msRequestFullscreen();
+            }
+
+            universeDiv.onmousedown = function(){
+                universe.AddBlock(new Block(universe.GetScene()));
+            };
+
+        };
+
+        window.gameOver = function(score){
+            banner.style.display = "block";
+            scoreDiv.style.display = "none";
+            sm.style.display = "block";
+            sm.innerHTML = "Last score<br>" + score;
         };
     }
 );

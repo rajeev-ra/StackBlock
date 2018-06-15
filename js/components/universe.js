@@ -6,17 +6,27 @@ define(['THREE', 'Config'], function(THREE, Config){
         renderer.setClearColor(Config.bgColor, 1);
         renderer.setSize( htmlElem.clientWidth, htmlElem.clientHeight );
 
-        camera.position.set(15,15,15);
-        camera.lookAt(0,3,0);
-        scene.add(camera)
+        this.Reset = function(){
+            while (scene.children.length) {
+                scene.remove(scene.children[0]);
+            }
 
-        var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
-        light.position.set( 0.5, 1, 0.75 );
-        scene.add( light );
-        
-        var geometry = new THREE.BoxGeometry( 5, 1, 5 );
-        var material = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-        scene.add(new THREE.Mesh( geometry, material ));
+            if(window.resetLastBlock){
+                window.resetLastBlock();
+            }
+            
+            camera.position.set(15,15,15);
+            camera.lookAt(0,3,0);
+            scene.add(camera)
+    
+            var light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
+            light.position.set( 0.5, 1, 0.75 );
+            scene.add( light );
+            
+            var geometry = new THREE.BoxGeometry( 5, 1, 5 );
+            var material = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+            scene.add(new THREE.Mesh( geometry, material ));
+        };
 
         htmlElem.appendChild(renderer.domElement);
         
@@ -56,6 +66,10 @@ define(['THREE', 'Config'], function(THREE, Config){
                 posCamera();
             }
         }
+
+        this.GetDom = function(){
+            return renderer.domElement;
+        };
 
         window.GetScene = function(){
             return scene;
